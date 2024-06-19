@@ -1,20 +1,25 @@
 package com.yse.dev;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.tomcat.util.descriptor.web.SecurityRoleRef;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class AnalyzeController {
@@ -24,7 +29,7 @@ public class AnalyzeController {
      }
 
     @PostMapping("/uploadfile")
-    public String uploadfileProcess(MultipartFile file, String data, Model model){
+    public String uploadfileProcess(@RequestParam("file") MultipartFile file, @RequestParam("data") String data, Model model){
          try {
              System.out.println(file.getSize());
              URL url = new URL("http://3.35.81.123:5000/analyze_img");
