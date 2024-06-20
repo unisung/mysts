@@ -8,5 +8,9 @@
 <h1> 요청 결과 </h1>
 파라미터 : <span th:text="${reqResult.param}"></span></p>
 <img th:src="'data:image/png;base64,'+${reqResult[file]}"></p>
+<br><br>
+<h3> from DB </h3>
+<img th:src="'data:image/png;base64,'+${imgSrc}">
+
 </body>
 </html>
