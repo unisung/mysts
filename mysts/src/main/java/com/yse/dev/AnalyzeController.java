@@ -114,7 +114,7 @@ public class AnalyzeController {
              while(itor.hasNext()){
                   String k = itor.next();
                   //String v = map.get(k);
-                 if (k.equals("movie_info") | k.equals("overview")) {
+                 if (k.equals("result_list") ) {
                      Object v = map.get(k);
                      System.out.println(k + ":"+ v);
                  }

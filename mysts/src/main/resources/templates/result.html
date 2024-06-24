@@ -12,19 +12,31 @@
 <h3> from DB </h3>
 <img th:src="'data:image/png;base64,'+${imgSrc}"></p>
 
-<span th:text="${reqResult.movie_info}"></span></p>
 
-<span th:text="${reqResult.movie_info.actors}"></span></p>
-<span th:text="${reqResult.movie_info.director}"></span></p>
-<span th:text="${reqResult.movie_info.genres}"></span></p>
-<span th:text="${reqResult.movie_info.poster_url}"></span></p>
+<table border="1">
+    <tr>
+        <th>주인공</th>
+        <th>감독</th>
+        <th>장르</th>
+        <th>post_url</th>
+        <th>개봉일</th>
+        <th>유사도</th>
+        <th>제 목</th>
+        <th>train_url</th>
+    </tr>
+   <tr th:each="movies:${reqResult.result_list}">
+       <td th:text="${movies.movie_info.actors}"></td>
+       <td th:text="${movies.movie_info.director}"></td>
+       <td th:text="${movies.movie_info.genres}"></td>
+       <td th:text="${movies.movie_info.poster_url}"></td>
+       <td th:text="${movies.movie_info.release_date}"></td>
+       <td th:text="${movies.movie_info.similarity}"></td>
+       <td th:text="${movies.movie_info.title}"></td>
+       <td th:text="${movies.movie_info.trailer_url}"></td>
+   </tr>
 
-<span th:text="${reqResult.movie_info.release_date}"></span></p>
-<span th:text="${reqResult.movie_info.similarity}"></span></p>
-<span th:text="${reqResult.movie_info.title}"></span></p>
-<span th:text="${reqResult.movie_info.trailer_url}"></span></p>
 
-<span th:text="${reqResult.overview}"></span></p>
+</table>
 
 </body>
 </html>
