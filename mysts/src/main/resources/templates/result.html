@@ -10,7 +10,21 @@
 <img th:src="'data:image/png;base64,'+${reqResult[file]}"></p>
 <br><br>
 <h3> from DB </h3>
-<img th:src="'data:image/png;base64,'+${imgSrc}">
+<img th:src="'data:image/png;base64,'+${imgSrc}"></p>
+
+<span th:text="${reqResult.movie_info}"></span></p>
+
+<span th:text="${reqResult.movie_info.actors}"></span></p>
+<span th:text="${reqResult.movie_info.director}"></span></p>
+<span th:text="${reqResult.movie_info.genres}"></span></p>
+<span th:text="${reqResult.movie_info.poster_url}"></span></p>
+
+<span th:text="${reqResult.movie_info.release_date}"></span></p>
+<span th:text="${reqResult.movie_info.similarity}"></span></p>
+<span th:text="${reqResult.movie_info.title}"></span></p>
+<span th:text="${reqResult.movie_info.trailer_url}"></span></p>
+
+<span th:text="${reqResult.overview}"></span></p>
 
 </body>
 </html>

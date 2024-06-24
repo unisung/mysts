@@ -7,11 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.Blob;
+import java.util.*;
 
+import com.yse.dev.entity.ImageFile;
+import com.yse.dev.service.ImageService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,18 +25,38 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class AnalyzeController {
+    @Autowired
+    ImageService imageService;
+
      @GetMapping("/uploadfile")
     public String uploadfileForm(){
          return "req_form";
      }
 
     @PostMapping("/uploadfile")
-    public String uploadfileProcess(@RequestParam("file") MultipartFile file, @RequestParam("data") String data, Model model){
+    public String uploadfileProcess(@RequestParam("file") MultipartFile file,
+                                    @RequestParam("data") String data,
+                                    @RequestParam("title") String title,
+                                    Model model){
          try {
              System.out.println(file.getSize());
-             URL url = new URL("http://3.35.81.123:5000/analyze_img");
+
+//             URL url = new URL("http://3.35.81.123:5000/analyze_img");
+             URL url = new URL("http://127.0.0.1:5000/analyze_img");
              HttpURLConnection con = (HttpURLConnection) url.openConnection();
              String boundary = UUID.randomUUID().toString();
+
+             //파일 저장
+             file.getOriginalFilename();
+             ImageFile imageFile = new ImageFile();
+             imageFile.setId(boundary);
+             imageFile.setTruthTitle(title);
+             imageFile.setPhoto(file.getBytes());
+             System.out.println("원본사이즈:" + file.getSize());
+             System.out.println("원본:"+file.getBytes().toString());
+             imageService.insert(imageFile);
+             ///////////////////////////////
+
              con.setRequestMethod("POST");
              con.setDoOutput(true);
              con.setRequestProperty("content-Type", "multipart/form-data;boundary=" + boundary);
@@ -85,15 +107,25 @@ public class AnalyzeController {
              //결과 문자열을 Map 객체로 변환
              ObjectMapper mapper = new ObjectMapper();
              Map<String, String> map = mapper.readValue(result, Map.class);
-             System.out.println(map.keySet());
+
+             System.out.println(map.keySet().toString());
              Set<String> keys = map.keySet();
              Iterator<String>itor =  keys.iterator();
              while(itor.hasNext()){
                   String k = itor.next();
-                  String v = map.get(k);
-                  System.out.println(k + ":" + v);
+                  //String v = map.get(k);
+                 if (k.equals("movie_info") | k.equals("overview")) {
+                     Object v = map.get(k);
+                     System.out.println(k + ":"+ v);
+                 }
              }
 
+             //불러오기
+             String id = boundary;
+             String ended64 = Base64.getEncoder().encodeToString(imageService.getImageById(id).getPhoto());
+
+
+             model.addAttribute("imgSrc", ended64);
              model.addAttribute("reqResult", map);
 
          }catch(Exception e){
