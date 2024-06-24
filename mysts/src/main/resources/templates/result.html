@@ -6,11 +6,14 @@
 </head>
 <body>
 <h1> 요청 결과 </h1>
-파라미터 : <span th:text="${reqResult.param}"></span></p>
-<img th:src="'data:image/png;base64,'+${reqResult[file]}"></p>
+파라미터 : <span th:if="${reqResult !=null}" th:text="${reqResult.param}"></span>
+
+</p>
+
+<img th:if="${reqResult !=null}" th:src="'data:image/png;base64,'+${reqResult[file]}"></p>
 <br><br>
 <h3> from DB </h3>
-<img th:src="'data:image/png;base64,'+${imgSrc}"></p>
+<img th:if="${reqResult !=null}" th:src="'data:image/png;base64,'+${imgSrc}"></p>
 
 
 <table border="1">
@@ -24,7 +27,13 @@
         <th>제 목</th>
         <th>train_url</th>
     </tr>
-   <tr th:each="movies:${reqResult.result_list}">
+    <tr th:if="${reqResult == null}">
+        <td colspan="8">해당하는 결과가 없습니다.</td>
+    </tr>
+
+   <tr th:unless="${reqResult == null}"
+            th:each="movies:${reqResult?.result_list}">
+
        <td th:text="${movies.movie_info.actors}"></td>
        <td th:text="${movies.movie_info.director}"></td>
        <td th:text="${movies.movie_info.genres}"></td>
