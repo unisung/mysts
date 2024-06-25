@@ -3,18 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+    <script type="text/javascript" th:inline="javascript">
+        $(function () {
+            $("input[type=button]").click(function () {
+                var pred_titles = $(".titles");
+
+                var pred_title1 = pred_titles.eq(0).text().trim();
+                var pred_title2 = pred_titles.eq(1).text().trim();
+                var pred_title3 = pred_titles.eq(2).text().trim();
+                var true_title = $('select[name=true_title] option:selected').val();
+
+                console.log(pred_title1, pred_title2, pred_title3, true_title);
+                // 이미지를 서버로 업로드
+                //var previewImage = document.getElementById('previewImage');
+                // 이미지 URL에서 base64 데이터 추출
+                //var base64Data = previewImage.src.trim();
+               // console.log(previewImage.src.split(',')[0],':',base64Data);
+                // base64 데이터를 Blob으로 변환
+                //var file = b64toFile(base64Data, 'image/png');
+
+                // FormData 객체 생성
+
+                var formData = new FormData();
+                //formData.append('file',file);
+                formData.append('imageId',[[${imageId}]]);
+                formData.append('predTitle1', pred_title1); // 예측 제목 1
+                formData.append('predTitle2', pred_title2); // 예측 제목 2
+                formData.append('predTitle3', pred_title3); // 예측 제목 3
+                formData.append('trueTitle', true_title); // 실제 제목
+
+                // Ajax를 사용하여 서버로 전송
+                $("input[type=button]").prop("disabled", true);
+                $.ajax({
+                    url: "http://localhost:8080/updateImage",
+                    async: true,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log('Image uploaded successfully:', response);
+                        $("input[type=button]").prop("disabled", false);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error uploading image:', error);
+                    }
+                });
+            });
+        });
+
+
+        // base64를 File로 변환해주는 함수
+        function b64toFile(base_data, contentType = '', sliceSize = 512) {
+            const image_data = base_data.split(',')[1]; // data:image/gif;base64 필요없으니 떼주고, base64 인코딩을 풀어준다
+            return new File([image_data], 'image.png', {type:contentType});
+        }
+        //출처: https://inpa.tistory.com/entry/JS-📚-Base64-Blob-ArrayBuffer-File-다루기-정말-이해하기-쉽게-설명#base64_→_arraybuffer_→_blob [Inpa Dev 👨‍💻:티스토리]
+    </script>
 </head>
 <body>
 <h1> 요청 결과 </h1>
 파라미터 : <span th:if="${reqResult !=null}" th:text="${reqResult.param}"></span>
 
 </p>
-
-<img th:if="${reqResult !=null}" th:src="'data:image/png;base64,'+${reqResult[file]}"></p>
+<img id="previewImage" th:if="${reqResult !=null}" th:src="'data:image/png;base64,'+${reqResult[file]}"></p>
+<form>
+    <!--<input type="file" th:src="'data:image/png;base64,'+${reqResult[file]}">-->
+</form>
 <br><br>
-<h3> from DB </h3>
-<img th:if="${reqResult !=null}" th:src="'data:image/png;base64,'+${imgSrc}"></p>
-
+<!--<h3> from DB </h3>-->
+<!--<img th:if="${reqResult !=null}" th:src="'data:image/png;base64,'+${imgSrc}"></p>-->
 
 <table border="1">
     <tr>
@@ -32,7 +91,7 @@
     </tr>
 
    <tr th:unless="${reqResult == null}"
-            th:each="movies:${reqResult?.result_list}">
+            th:each="movies, movieStat :${reqResult?.result_list}">
 
        <td th:text="${movies.movie_info.actors}"></td>
        <td th:text="${movies.movie_info.director}"></td>
@@ -40,12 +99,19 @@
        <td th:text="${movies.movie_info.poster_url}"></td>
        <td th:text="${movies.movie_info.release_date}"></td>
        <td th:text="${movies.movie_info.similarity}"></td>
-       <td th:text="${movies.movie_info.title}"></td>
+       <td class="titles" th:text="${movies.movie_info.title}" th:attr="data-idx=${movieStat.count}"></td>
        <td th:text="${movies.movie_info.trailer_url}"></td>
    </tr>
-
-
 </table>
+</br>
 
-</body>
+<select id="true_title" name="true_title">
+    <option value="1">제목 1</option>
+    <option value="2">제목 2</option>
+    <option value="3">제목 3</option>
+    <option value="4">해당없음</option>
+</select>
+
+<input type="button">체크</input>
+</body>d
 </html>

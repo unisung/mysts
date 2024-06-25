@@ -1,10 +1,6 @@
 package com.yse.dev;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Blob;
@@ -14,11 +10,11 @@ import com.yse.dev.entity.ImageFile;
 import com.yse.dev.service.ImageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -122,15 +118,54 @@ public class AnalyzeController {
 
              //불러오기
              String id = boundary;
-             String ended64 = Base64.getEncoder().encodeToString(imageService.getImageById(id).getPhoto());
+            String ended64 = Base64.getEncoder().encodeToString(imageService.getImageById(id).getPhoto());
 
 
-             model.addAttribute("imgSrc", ended64);
+             //model.addAttribute("imgSrc", ended64);
              model.addAttribute("reqResult", map);
+             model.addAttribute("imageId", id);
 
          }catch(Exception e){
             e.printStackTrace();
          }
         return "result";
     }
+
+    @PostMapping("/updateImage")
+    public ResponseEntity<String> updateImage(
+//        @RequestParam("file") MultipartFile file,
+        @RequestParam("imageId") String imageId,
+        @RequestParam("predTitle1") String predTitle1,
+        @RequestParam("predTitle2") String predTitle2,
+        @RequestParam("predTitle3") String predTitle3,
+        @RequestParam("trueTitle") String trueTitle
+        ) throws IOException {
+        //String imageId = UUID.randomUUID().toString();
+
+        //파일 저장
+//        file.getOriginalFilename();
+        ImageFile imageFile = new ImageFile();
+        imageFile.setId(imageId);
+//        imageFile.setPhoto(file.getBytes());
+        imageFile.setPredTitle1(predTitle1);
+        imageFile.setPredTitle2(predTitle2);
+        imageFile.setPredTitle3(predTitle3);
+        imageFile.setTruthTitle(trueTitle);
+        imageService.update(imageFile);
+
+         System.out.println("imageId:"+imageId);
+        return new ResponseEntity<String>("OK",  HttpStatus. OK);
+    }
+
+    @GetMapping("/viewImage/{id}")
+    public String getImageById(@PathVariable("id") String id, Model model ){
+         System.out.println("id:"+id);
+
+         ImageFile imageFile = imageService.getImageById(id);
+         String encoded64 = Base64.getEncoder().encodeToString(imageFile.getPhoto());
+         model.addAttribute("encoded64", encoded64);
+         System.out.println("image:"+encoded64+": size:"+imageFile.getPhoto().length);
+
+         return "imgtest";
+     }
 }

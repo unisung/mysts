@@ -15,14 +15,21 @@ import lombok.NoArgsConstructor;
 public class ImageFile {
   @Id
   private String id;
-  
-  @Column(name = "trueTitle", columnDefinition="varchar(1024)")
-  private String truthTitle;
-  
-  @Column(name = "predTitle", columnDefinition="varchar(1024)")
-  private String predTitle;
+
   @Lob
   @Column(name = "image", columnDefinition="LONGBLOB")
   private byte[] photo;
-  
+
+  @Column(name = "predTitle1", columnDefinition="varchar(1024)")
+  private String predTitle1;
+
+  @Column(name = "predTitle2", columnDefinition="varchar(1024)")
+  private String predTitle2;
+
+  @Column(name = "predTitle3", columnDefinition="varchar(1024)")
+  private String predTitle3;
+
+  @Column(name = "trueTitle", columnDefinition="varchar(2)")
+  private String truthTitle; // {1,2,3,4} 제목1이 맞으면1, 제목2가 맞으면2, 제목3이 맞으면3, 그외 4
+
 }
