@@ -46,6 +46,10 @@ public class AnalyzeController {
              file.getOriginalFilename();
              ImageFile imageFile = new ImageFile();
              imageFile.setId(boundary);
+             long maxNo = imageService.findMaxSeqNo(); //테이블에서 max sequence가져와서
+             System.out.println("maxNo:"+maxNo);
+             imageFile.setSeqNo(maxNo + 1);//Max값 +1로 설정
+
              imageFile.setTruthTitle(title);
              imageFile.setPhoto(file.getBytes());
              System.out.println("원본사이즈:" + file.getSize());

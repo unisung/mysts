@@ -9,4 +9,6 @@ public interface ImageService {
 	public ImageFile getImageById(String id);
 	public List<ImageFile> getImageList();
 	public void update(ImageFile imageFile);
+	//max값 가져오는 메소드 추가
+	public Long findMaxSeqNo();
 }

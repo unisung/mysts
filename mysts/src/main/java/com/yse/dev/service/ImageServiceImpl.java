@@ -37,4 +37,9 @@ public class ImageServiceImpl implements ImageService{
         imageFile1.setPredTitle3(imageFile.getPredTitle3());
         repository.save(imageFile1);
     }
+   //max sequence가져오는 메소드 추가
+    @Override
+    public Long findMaxSeqNo() {
+        return repository.findMaxSeqNo();
+    }
 }
