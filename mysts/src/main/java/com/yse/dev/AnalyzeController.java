@@ -6,6 +6,8 @@ import java.net.URL;
 import java.sql.Blob;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.yse.dev.entity.ImageFile;
 import com.yse.dev.service.ImageService;
 
@@ -113,10 +115,12 @@ public class AnalyzeController {
              Iterator<String>itor =  keys.iterator();
              while(itor.hasNext()){
                   String k = itor.next();
-                  //String v = map.get(k);
                  if (k.equals("result_list") ) {
                      Object v = map.get(k);
-                     System.out.println(k + ":"+ v);
+                     System.out.println(k + ":"+ v.toString());
+                     System.out.println(v.toString().contains("genre"));
+                     String result1 = v.toString();
+
                  }
              }
 

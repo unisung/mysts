@@ -100,7 +100,9 @@
 
        <td th:text="${movies.movie_info.actors}"></td>
        <td th:text="${movies.movie_info.director}"></td>
-       <td th:text="${movies.movie_info.genres}"></td>
+
+       <td  th:text="${#strings.arrayJoin(movies.movie_info.genres, ', ')}"></td>
+
        <td th:text="${movies.movie_info.poster_url}"></td>
        <td><img th:src="${movies.movie_info.poster_url}" style="width: 100px;"></td>
        <td th:text="${movies.movie_info.similarity}"></td>
